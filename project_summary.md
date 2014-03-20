@@ -1,12 +1,13 @@
 # Project Title
-Insert the name of your project
+Flow
 
 ## Authors
-- Insert main author name, surname, github account
-- Insert other author(s) name, surname, github account (one per list element)
+- DooYoung Lee, https://github.com/headzero
 
 ## Description
-Insert a description containing about 100 to 150 words, including your motivation and the meaning behind your idea and execution. The Judges will be keen to know how your idea pushes the boundaries of code and technology. 
+Motivation from flow. Like wave, wind, flower, fireworks and so on.
+Expresion something flow on multiple android screens.
+Each devices linked by socket and control from host phone.
 
 ## Link to Prototype
 NOTE: If your project lives online you can add one or more links here. Make sure you have a stable version of your project running before linking it.
