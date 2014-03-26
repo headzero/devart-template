@@ -3,14 +3,10 @@ package headzero.flow;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -20,7 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 
 public class ServerActivity extends Activity {
     public static final String IPADDR = "ipAddr";
@@ -28,7 +24,7 @@ public class ServerActivity extends Activity {
 
     Handler updateConversationHandler;
 
-    Thread serverThread = null;
+    ServerThread serverThread = null;
 
     private TextView text;
 
@@ -48,25 +44,19 @@ public class ServerActivity extends Activity {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                try {
-//                    String str = editText.getText().toString();
-//                    PrintWriter out = new PrintWriter(new BufferedWriter(
-//                            new OutputStreamWriter(serverSocket.accept().getOutputStream())),
-//                            true);
-//                    out.println(str);
-//                } catch (UnknownHostException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+                if(editText == null || editText.getText().toString() == null || "".equals(editText.getText().toString())){
+                    return;
+                }
+
+                if(serverThread != null){
+                    serverThread.doMultipleSendMessage(editText.getText().toString());
+                }
             }
         });
 
         updateConversationHandler = new Handler();
 
-        this.serverThread = new Thread(new ServerThread());
+        this.serverThread = new ServerThread();
         this.serverThread.start();
 
     }
@@ -83,7 +73,8 @@ public class ServerActivity extends Activity {
         }
     }
 
-    class ServerThread implements Runnable {
+    class ServerThread extends Thread {
+        private ArrayList<CommunicationThread> communicationThreads = new ArrayList<CommunicationThread>();
 
         public void run() {
             Socket socket = null;
@@ -97,18 +88,24 @@ public class ServerActivity extends Activity {
                 try {
 
                     socket = serverSocket.accept();
-
                     CommunicationThread commThread = new CommunicationThread(socket);
-                    new Thread(commThread).start();
+                    communicationThreads.add(commThread);
+                    commThread.start();
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+
+        public void doMultipleSendMessage(String message) {
+            for (CommunicationThread communicationThread : communicationThreads) {
+                communicationThread.sendMessage(message);
+            }
+        }
     }
 
-    class CommunicationThread implements Runnable {
+    public class CommunicationThread extends Thread{
 
         private Socket clientSocket;
 
@@ -135,7 +132,9 @@ public class ServerActivity extends Activity {
                 try {
 
                     String read = input.readLine();
-                    returnMessage(read);
+                    // sendMessage(read); // memo : single return;
+                    serverThread.doMultipleSendMessage(read);
+
                     updateConversationHandler.post(new updateUIThread(read));
 
                 } catch (IOException e) {
@@ -144,7 +143,7 @@ public class ServerActivity extends Activity {
             }
         }
 
-        private void returnMessage(String read) {
+        public void sendMessage(String read) {
             try {
                 PrintWriter out = new PrintWriter(output, true);
                 out.println(read);
