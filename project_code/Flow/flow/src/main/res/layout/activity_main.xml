@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="내 IP 주소"/>
+
+    <TextView
+        android:id="@+id/text_ip_addr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="접속할 IP 주소"/>
+
+    <EditText
+        android:id="@+id/edit_ip_addr"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="172.16.126.203"/>
+
+    <Button
+        android:id="@+id/btn_client"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="client"/>
+
+    <Button
+        android:id="@+id/btn_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="server"/>
+
+</LinearLayout>
